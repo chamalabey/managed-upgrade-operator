@@ -12,6 +12,7 @@ type upgraderConfig struct {
 	Maintenance                    maintenanceConfig                 `yaml:"maintenance"`
 	Scale                          scaleConfig                       `yaml:"scale"`
 	NodeDrain                      drain.NodeDrain                   `yaml:"nodeDrain"`
+	PDB                            pdb                               `yaml:"pdb"`
 	HealthCheck                    healthCheck                       `yaml:"healthCheck"`
 	ExtDependencyAvailabilityCheck ac.ExtDependencyAvailabilityCheck `yaml:"extDependencyAvailabilityChecks"`
 	UpgradeWindow                  upgradeWindow                     `yaml:"upgradeWindow"`
@@ -36,6 +37,7 @@ func (cfg *upgraderConfig) IsFeatureEnabled(feature string) bool {
 
 type maintenanceConfig struct {
 	ControlPlaneTime int           `yaml:"controlPlaneTime" default:"60"`
+	DataPlaneTime    int           `yaml:"dataPlaneTime" default:"60"`
 	IgnoredAlerts    ignoredAlerts `yaml:"ignoredAlerts"`
 }
 
@@ -50,7 +52,9 @@ func (cfg *maintenanceConfig) IsValid() error {
 	if cfg.ControlPlaneTime <= 0 {
 		return fmt.Errorf("config maintenance controlPlaneTime out is invalid")
 	}
-
+	if cfg.DataPlaneTime <= 0 {
+		return fmt.Errorf("config maintenance dataPlaneTime out is invalid")
+	}
 	return nil
 }
 
@@ -83,6 +87,10 @@ type scaleConfig struct {
 	TimeOut int `yaml:"timeOut" default:"30"`
 }
 
+type pdb struct {
+	TimeOut int `yaml:"timeOut" default:"8"`
+}
+
 type healthCheck struct {
 	IgnoredCriticals  []string `yaml:"ignoredCriticals"`
 	IgnoredNamespaces []string `yaml:"ignoredNamespaces"`
@@ -91,6 +99,9 @@ type healthCheck struct {
 func (cfg *upgraderConfig) IsValid() error {
 	if err := cfg.Maintenance.IsValid(); err != nil {
 		return err
+	}
+	if cfg.NodeDrain.Timeout <= 0 {
+		return fmt.Errorf("config nodeDrain timeOut is invalid")
 	}
 	if cfg.NodeDrain.Timeout <= 0 {
 		return fmt.Errorf("config nodeDrain timeOut is invalid")

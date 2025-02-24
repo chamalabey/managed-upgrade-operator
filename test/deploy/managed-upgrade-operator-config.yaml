@@ -11,6 +11,7 @@ data:
       watchInterval: 60
     maintenance:
       controlPlaneTime: 90
+      dataPlaneTime: 90
       ignoredAlerts:
         controlPlaneCriticals:
         - etcdMembersDown
@@ -26,6 +27,8 @@ data:
     nodeDrain:
       timeOut: 45
       expectedNodeDrainTime: 8
+    pdb:
+      timeOut: 8
     healthCheck:
       ignoredCriticals:
       - DNSErrors05MinSRE

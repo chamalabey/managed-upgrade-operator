@@ -13,8 +13,8 @@ type config struct {
 type upgradeWindow struct {
 	TimeOut             int `yaml:"timeOut" default:"120"`
 	DelayTrigger        int `yaml:"delayTrigger" default:"30"`
-	ControlPlaneTimeout int `yaml:"timeOut" default:"90"`
-	DataPlaneTimeout    int `yaml:"timeOut" default:"90"`
+	ControlPlaneTimeout int `yaml:"controlPlaneTimeout" default:"90"`
+	DataPlaneTimeout    int `yaml:"dataPlaneTimeout" default:"90"`
 }
 
 func (cfg *config) IsValid() error {
